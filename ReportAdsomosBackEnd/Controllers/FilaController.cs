@@ -13,9 +13,9 @@ namespace ReportAdsomosBackEnd.Controllers
     [ApiController]
     public class FilaController : ControllerBase
     {
-        private readonly string urlCentral;
-        private readonly string urlRelatorio;
         private readonly string urlGeral;
+        private readonly string urlRelatorio;
+        private readonly string urlFila;
         private string token;
         private string fila;
         /* 
@@ -34,9 +34,9 @@ namespace ReportAdsomosBackEnd.Controllers
 
         public FilaController()
         {
-            urlGeral = "/public/";
-            urlCentral = "/public/index";
-            urlRelatorio = "/library/fila/realtime_ajax.php";
+            urlGeral = "http://192.168.0.6/integrador/public/index";
+            urlRelatorio = "http://192.168.0.6/integrador/library/fila/answered.php";
+            urlFila = "http://192.168.0.6/integrador/library/fila/realtime_ajax.php";
             token = "";
         }
 
@@ -49,7 +49,7 @@ namespace ReportAdsomosBackEnd.Controllers
                 var client = this.ServiceHTTPClient;
 
                 //Gerar o Token
-                var consultaToken = client.GetAsync("http://192.168.0.6/integrador/public/index").Result;
+                var consultaToken = client.GetAsync(urlGeral).Result;
 
                 //Coletando o Token dos Cookies recebidos
                 if (consultaToken.Headers.TryGetValues("Set-Cookie", out var cookies))
@@ -71,7 +71,7 @@ namespace ReportAdsomosBackEnd.Controllers
 
                 //Cria um novo HttpClient com o HttpClientHandler personalizado (Cookie)
                 var httpClientComCookies = new HttpClient(handler);
-                httpClientComCookies.BaseAddress = new Uri("http://192.168.0.6/integrador/public/index");
+                httpClientComCookies.BaseAddress = new Uri(urlGeral);
 
                 //Definição dos dados para Login
                 using MultipartFormDataContent contentLogin = new()
@@ -100,10 +100,10 @@ namespace ReportAdsomosBackEnd.Controllers
                 };
 
                 //Filtrar relatório
-                var relatorio = httpClientComCookies.PostAsync("http://192.168.0.6/integrador/library/fila/answered.php", filtroRelatorio).Result;
+                var relatorio = httpClientComCookies.PostAsync(urlRelatorio, filtroRelatorio).Result;
 
                 //Fila com os agentes
-                var filaAgentes = httpClientComCookies.GetAsync("http://192.168.0.6/integrador/library/fila/realtime_ajax.php").Result;
+                var filaAgentes = httpClientComCookies.GetAsync(urlFila).Result;
 
                 //Coleta o retorno e define a fila
                 fila = filaAgentes.Content.ReadAsStringAsync().Result;
@@ -132,8 +132,7 @@ namespace ReportAdsomosBackEnd.Controllers
                 //HttpClient
                 var SerHTTPClient = new HttpClient();
                 SerHTTPClient.Timeout = new TimeSpan(0, 5, 0);
-                //SerHTTPClient.BaseAddress = new Uri("http://192.168.0.6/integrador");
-                SerHTTPClient.BaseAddress = new Uri("http://192.168.0.6/integrador");
+                SerHTTPClient.BaseAddress = new Uri(urlGeral);
 
                 return SerHTTPClient;
             }
