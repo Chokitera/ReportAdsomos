@@ -38,6 +38,7 @@ namespace ReportAdsomosBackEnd.Controllers
             urlRelatorio = "http://192.168.0.6/integrador/library/fila/answered.php";
             urlFila = "http://192.168.0.6/integrador/library/fila/realtime_ajax.php";
             token = "";
+            fila = "";
         }
 
         [HttpGet("fila")]
@@ -108,6 +109,19 @@ namespace ReportAdsomosBackEnd.Controllers
                 //Coleta o retorno e define a fila
                 fila = filaAgentes.Content.ReadAsStringAsync().Result;
                 Console.WriteLine(fila); //Debug
+
+                /* FAZER MÉTODO PARA PEGAR A FILA E VERIFICAR QUEM ESTÁ EM PAUSA, AO SAIR DA PAUSA ENVIAR AO BANCO A INFORMAÇÃO: 
+                 * FILA
+                 * AGENTE
+                 * STATUS (PAUSA)
+                 * DATA
+                 * HORARIO INICIAL
+                 * HORARIO FINAL
+                 * TEMPO (TEMPO DE PAUSA)
+                */
+
+                //TRANSFORMAR FILA EM JSON
+                //Fazer...
 
                 //Retorna o Token + a Fila (Utilizado como teste atualmente)
                 if (token == string.Empty)
