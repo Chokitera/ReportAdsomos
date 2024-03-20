@@ -110,14 +110,14 @@ namespace ReportAdsomosBackEnd.Controllers
                 fila = filaAgentes.Content.ReadAsStringAsync().Result;
                 Console.WriteLine(fila); //Debug
 
-                /* FAZER MÉTODO PARA PEGAR A FILA E VERIFICAR QUEM ESTÁ EM PAUSA, AO SAIR DA PAUSA ENVIAR AO BANCO A INFORMAÇÃO: 
+                /* FAZER MÉTODO PARA PEGAR A FILA E VERIFICAR QUEM ESTÁ EM PAUSA (UTILIZAR MODELS), AO SAIR DA PAUSA ENVIAR AO BANCO A INFORMAÇÃO: 
                  * FILA
                  * AGENTE
                  * STATUS (PAUSA)
                  * DATA
+                 * TEMPO (TEMPO DE PAUSA)
                  * HORARIO INICIAL
                  * HORARIO FINAL
-                 * TEMPO (TEMPO DE PAUSA)
                 */
 
                 //TRANSFORMAR FILA EM JSON

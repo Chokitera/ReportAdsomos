@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="MetaDados\" />
     <Folder Include="Util\" />
     <Folder Include="Services\" />
   </ItemGroup>
