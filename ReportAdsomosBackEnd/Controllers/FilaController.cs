@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.Json.Nodes;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using HtmlAgilityPack;
 
 namespace ReportAdsomosBackEnd.Controllers
 {
@@ -119,6 +120,35 @@ namespace ReportAdsomosBackEnd.Controllers
                  * HORARIO INICIAL
                  * HORARIO FINAL
                 */
+
+                //Trabalhando com o HTML recebido
+                HtmlDocument html = new HtmlDocument();
+                html.LoadHtml(fila);
+
+                var valor = html.DocumentNode.SelectNodes("//tr").Last();
+                
+                foreach (HtmlNode item in valor.SelectNodes("//td"))
+                {
+                    if (item.InnerHtml.Trim() != string.Empty)
+                    {
+                        string result = item.InnerHtml.Trim();
+                    } 
+                }
+
+                //Varre os dados presentes na fila
+                foreach (HtmlNode div in html.DocumentNode.SelectNodes("//div")) //Div principal
+                {
+                    foreach(HtmlNode table in html.DocumentNode.SelectNodes("//table")) //Tabela principal
+                    {
+                        foreach(HtmlNode tr in html.DocumentNode.SelectNodes("//tr")) //Inicio da fila
+                        {
+                            foreach (HtmlNode td in html.DocumentNode.SelectNodes("//td")) //Dados da fila
+                            {
+                                string resultado = td.InnerHtml;
+                            }
+                        }
+                    }
+                }
 
                 //TRANSFORMAR FILA EM JSON
                 //Fazer...
