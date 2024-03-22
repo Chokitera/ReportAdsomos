@@ -7,6 +7,7 @@ using System.Text.Json.Nodes;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using HtmlAgilityPack;
+using Model.MetaDados;
 
 namespace ReportAdsomosBackEnd.Controllers
 {
@@ -14,11 +15,13 @@ namespace ReportAdsomosBackEnd.Controllers
     [ApiController]
     public class FilaController : ControllerBase
     {
+        private Agente agente;
         private readonly string urlGeral;
         private readonly string urlRelatorio;
         private readonly string urlFila;
         private string token;
         private string fila;
+        private int sequencia;
         /* 
           REQUISITO: COLETAR OS DADOS DA CENTRAL E TRANSFORMAR EM JSON, SOMENTE AS INFORMAÇÕES ABAIXO:
 
@@ -40,6 +43,7 @@ namespace ReportAdsomosBackEnd.Controllers
             urlFila = "http://192.168.0.6/integrador/library/fila/realtime_ajax.php";
             token = "";
             fila = "";
+            agente = new Agente();
         }
 
         [HttpGet("fila")]
@@ -125,30 +129,60 @@ namespace ReportAdsomosBackEnd.Controllers
                 HtmlDocument html = new HtmlDocument();
                 html.LoadHtml(fila);
 
-                var valor = html.DocumentNode.SelectNodes("//tr").Last();
-                
+                html.DocumentNode.SelectNodes("//tr").First().Remove(); //Remover código indevido
+                var valor = html.DocumentNode.SelectNodes("//tr").Last(); //Seleciona o último tr do html
+                int resultado; //Validação numerica
+
+                //Varre os dados presentes na fila
                 foreach (HtmlNode item in valor.SelectNodes("//td"))
                 {
-                    if (item.InnerHtml.Trim() != string.Empty)
+                    if (!string.IsNullOrWhiteSpace(item.InnerHtml) && 
+                        !item.InnerHtml.Trim().Contains("span") &&
+                        !item.InnerHtml.Trim().Contains("Status") &&
+                        !int.TryParse(item.InnerHtml.Trim(), out resultado))
                     {
                         string result = item.InnerHtml.Trim();
+                        Console.WriteLine(result);
+
+                        switch (sequencia)
+                        {
+                            case 1:
+                                agente.fila.Nome = result; //Fila
+                                break;
+                            case 2:
+                                agente.Nome = result; //Nome
+                                break;
+                            case 3:
+                                agente.Status = result; //Status
+                                sequencia = 1;
+                                break;
+                            default:
+                                sequencia = 1;
+                                break;
+                        }
+
+                        //Verificar antes se o agente está em pausa...
+                        if (agente.Status == "Pausa")
+                            //Console.WriteLine($"Agente em pausa: ${agente.Nome}");
+
+                        sequencia++;
                     } 
                 }
 
-                //Varre os dados presentes na fila
-                foreach (HtmlNode div in html.DocumentNode.SelectNodes("//div")) //Div principal
-                {
-                    foreach(HtmlNode table in html.DocumentNode.SelectNodes("//table")) //Tabela principal
-                    {
-                        foreach(HtmlNode tr in html.DocumentNode.SelectNodes("//tr")) //Inicio da fila
-                        {
-                            foreach (HtmlNode td in html.DocumentNode.SelectNodes("//td")) //Dados da fila
-                            {
-                                string resultado = td.InnerHtml;
-                            }
-                        }
-                    }
-                }
+                ////Varre os dados presentes na fila
+                //foreach (HtmlNode div in html.DocumentNode.SelectNodes("//div")) //Div principal
+                //{
+                //    foreach(HtmlNode table in html.DocumentNode.SelectNodes("//table")) //Tabela principal
+                //    {
+                //        foreach(HtmlNode tr in html.DocumentNode.SelectNodes("//tr")) //Inicio da fila
+                //        {
+                //            foreach (HtmlNode td in html.DocumentNode.SelectNodes("//td")) //Dados da fila
+                //            {
+                //                string resultado = td.InnerHtml;
+                //            }
+                //        }
+                //    }
+                //}
 
                 //TRANSFORMAR FILA EM JSON
                 //Fazer...
