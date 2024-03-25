@@ -129,11 +129,12 @@ namespace ReportAdsomosBackEnd.Controllers
                 HtmlDocument html = new HtmlDocument();
                 html.LoadHtml(fila);
 
-                html.DocumentNode.SelectNodes("//tr").First().Remove(); //Remover código indevido
+                html.DocumentNode.SelectNodes("//tr").First().Remove(); //Remover código indevido (Cabeçalho Status)
                 var valor = html.DocumentNode.SelectNodes("//tr").Last(); //Seleciona o último tr do html
                 int resultado; //Validação numerica
 
                 //Varre os dados presentes na fila
+                sequencia = 1;
                 foreach (HtmlNode item in valor.SelectNodes("//td"))
                 {
                     if (!string.IsNullOrWhiteSpace(item.InnerHtml) && 
@@ -147,23 +148,23 @@ namespace ReportAdsomosBackEnd.Controllers
                         switch (sequencia)
                         {
                             case 1:
-                                agente.fila.Nome = result; //Fila
+                                agente.Fila.Nome = result ?? "";
                                 break;
                             case 2:
                                 agente.Nome = result; //Nome
                                 break;
                             case 3:
                                 agente.Status = result; //Status
-                                sequencia = 1;
+
+                                //Verificar antes se o agente está em pausa...
+                                if (agente.Status == "Pausa")
+                                    Console.WriteLine($"Agente em pausa: {agente.Nome}");
+                                sequencia = 0;
                                 break;
                             default:
-                                sequencia = 1;
+                                sequencia = 0;
                                 break;
                         }
-
-                        //Verificar antes se o agente está em pausa...
-                        if (agente.Status == "Pausa")
-                            //Console.WriteLine($"Agente em pausa: ${agente.Nome}");
 
                         sequencia++;
                     } 
@@ -202,11 +203,6 @@ namespace ReportAdsomosBackEnd.Controllers
         {
             get
             {
-                //HttpClientHandler com cCookies
-                //var handler = new HttpClientHandler();
-                //handler.CookieContainer = new CookieContainer();
-                //handler.UseCookies = true;
-
                 //HttpClient
                 var SerHTTPClient = new HttpClient();
                 SerHTTPClient.Timeout = new TimeSpan(0, 5, 0);
