@@ -158,7 +158,28 @@ namespace ReportAdsomosBackEnd.Controllers
 
                                 //Verificar antes se o agente está em pausa...
                                 if (agente.Status == "Pausa")
+                                {
                                     Console.WriteLine($"Agente em pausa: {agente.Nome}");
+
+                                    //Gravar essa informação no banco
+                                    agente.Observacoes.Data = DateTime.Today;
+                                    agente.Observacoes.HoraInicial = DateTime.Now;
+                                }
+                                else
+                                {
+                                    //Verifica agente no banco
+                                    Agente agenteAux = new();
+                                    //agenteAux = //Trabalhar aqui com a consulta no banco... (Pesquisar aqui pelo nome do agente)
+
+                                    if(agenteAux.Observacoes.Data == DateTime.Today && agenteAux.Observacoes.HoraFinal == null)
+                                    {
+                                        //Fazer aqui a inserção no banco da hora final e tempo
+                                        agente.Observacoes.HoraFinal = DateTime.Now;
+                                        //agente.Observacoes.Duracao = agenteAux.Observacoes.HoraInicial - DateTime.Now;
+                                    }
+                                }
+
+
                                 sequencia = 0;
                                 break;
                             default:
