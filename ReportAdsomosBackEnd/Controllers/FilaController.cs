@@ -170,6 +170,9 @@ namespace ReportAdsomosBackEnd.Controllers
                                     //Gravar essa informação no banco
                                     agente.Observacoes.Data = DateTime.Today;
                                     agente.Observacoes.HoraInicial = DateTime.Now;
+
+                                    //Antes de gravar no banco, verificar se o registro já não está no banco em aberto (data de hoje)... Se já existir o registro, não fazer nada.
+
                                 }
                                 else
                                 {
