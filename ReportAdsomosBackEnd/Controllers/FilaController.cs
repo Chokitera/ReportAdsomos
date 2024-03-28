@@ -15,6 +15,7 @@ namespace ReportAdsomosBackEnd.Controllers
     [ApiController]
     public class FilaController : ControllerBase
     {
+        private Agente agente;
         private readonly string urlGeral;
         private readonly string urlRelatorio;
         private readonly string urlFila;
@@ -42,6 +43,7 @@ namespace ReportAdsomosBackEnd.Controllers
             urlFila = "http://192.168.0.6/integrador/library/fila/realtime_ajax.php";
             token = "";
             fila = "";
+            agente = new Agente();
         }
 
         [HttpGet("fila")]
@@ -142,13 +144,11 @@ namespace ReportAdsomosBackEnd.Controllers
                     {
                         string result = item.InnerHtml.Trim();
                         Console.WriteLine(result);
-                        //Novo Agente
-                        Agente agente = new();
 
                         switch (sequencia)
                         {
                             case 1:
-                                agente.Fila.Nome = result ?? "";
+                                agente.Fila.Nome = result ?? ""; //Fila
                                 break;
                             case 2:
                                 agente.Nome = result; //Nome
@@ -185,10 +185,12 @@ namespace ReportAdsomosBackEnd.Controllers
                                         //Fazer aqui a inserção no banco da hora final e tempo
                                         agente.Observacoes.HoraFinal = DateTime.Now;
                                         TimeSpan duracao = agenteAux.Observacoes.HoraFinal - agenteAux.Observacoes.HoraInicial;
-                                        agente.Observacoes.Duracao = agente.Observacoes.Duracao.Add(duracao);
+                                        agente.Observacoes.Duracao = agenteAux.Observacoes.Duracao.Add(duracao); //Fazer com que não seja preenchido a Duracao na consulta no bd
+
+                                        //Salvar no banco (Update no registro já presente)
+
                                     }
                                 }
-
 
                                 sequencia = 0;
                                 break;
