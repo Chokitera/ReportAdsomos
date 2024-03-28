@@ -15,7 +15,6 @@ namespace ReportAdsomosBackEnd.Controllers
     [ApiController]
     public class FilaController : ControllerBase
     {
-        private Agente agente;
         private readonly string urlGeral;
         private readonly string urlRelatorio;
         private readonly string urlFila;
@@ -43,7 +42,6 @@ namespace ReportAdsomosBackEnd.Controllers
             urlFila = "http://192.168.0.6/integrador/library/fila/realtime_ajax.php";
             token = "";
             fila = "";
-            agente = new Agente();
         }
 
         [HttpGet("fila")]
@@ -144,6 +142,8 @@ namespace ReportAdsomosBackEnd.Controllers
                     {
                         string result = item.InnerHtml.Trim();
                         Console.WriteLine(result);
+                        //Novo Agente
+                        Agente agente = new();
 
                         switch (sequencia)
                         {
@@ -155,6 +155,12 @@ namespace ReportAdsomosBackEnd.Controllers
                                 break;
                             case 3:
                                 agente.Status = result; //Status
+
+                                //Teste nos tempos, deixar por enquanto para debug
+                                //DateTime tempo2 = DateTime.Now;
+                                //DateTime tempo1 = Convert.ToDateTime("28/03/2024 16:07:00");
+                                //TimeSpan duracao = tempo2 - tempo1;
+                                //agente.Observacoes.Duracao = agente.Observacoes.Duracao.Add(duracao);
 
                                 //Verificar antes se o agente está em pausa...
                                 if (agente.Status == "Pausa")
@@ -171,11 +177,12 @@ namespace ReportAdsomosBackEnd.Controllers
                                     Agente agenteAux = new();
                                     //agenteAux = //Trabalhar aqui com a consulta no banco... (Pesquisar aqui pelo nome do agente)
 
-                                    if(agenteAux.Observacoes.Data == DateTime.Today && agenteAux.Observacoes.HoraFinal == null)
+                                    if(agenteAux.Observacoes.Data == DateTime.Today && agenteAux.Observacoes.HoraFinal == null) //Data da pausa for hoje e ainda não tiver um fim
                                     {
                                         //Fazer aqui a inserção no banco da hora final e tempo
                                         agente.Observacoes.HoraFinal = DateTime.Now;
-                                        //agente.Observacoes.Duracao = agenteAux.Observacoes.HoraInicial - DateTime.Now;
+                                        TimeSpan duracao = agenteAux.Observacoes.HoraFinal - agenteAux.Observacoes.HoraInicial;
+                                        agente.Observacoes.Duracao = agente.Observacoes.Duracao.Add(duracao);
                                     }
                                 }
 
