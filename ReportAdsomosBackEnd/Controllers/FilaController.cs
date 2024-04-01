@@ -44,8 +44,8 @@ namespace ReportAdsomosBackEnd.Controllers
             urlFila = "http://192.168.0.6/integrador/library/fila/realtime_ajax.php";
             token = "";
             fila = "";
-            agente = new Agente();
-            observacoes = new ObservacoesAgente();
+            agente = new();
+            observacoes = new();
         }
 
         [HttpGet("fila")]

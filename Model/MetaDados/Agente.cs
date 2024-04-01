@@ -14,5 +14,10 @@ namespace Model.MetaDados
         //public virtual ObservacoesAgente? Observacoes { get; set; }
         //public Fila Fila = new();
         //public ObservacoesAgente Observacoes = new();
+
+        public Agente()
+        {
+            Fila = new();
+        }
     }
 }

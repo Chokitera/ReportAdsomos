@@ -7,12 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Abstractions\" />
-    <Folder Include="DAO\" />
     <Folder Include="DTO\" />
-    <Folder Include="Mapeamento\" />
     <Folder Include="Migrations\" />
-    <Folder Include="Util\" />
   </ItemGroup>
 
   <ItemGroup>

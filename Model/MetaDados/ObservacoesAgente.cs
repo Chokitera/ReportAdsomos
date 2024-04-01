@@ -13,5 +13,10 @@ namespace Model.MetaDados
         public DateTime HoraInicial { get; set; }
         public DateTime HoraFinal { get; set; }
         public virtual Agente? Agente { get; set; }
+
+        public ObservacoesAgente()
+        {
+            Agente = new();
+        }
     }
 }
