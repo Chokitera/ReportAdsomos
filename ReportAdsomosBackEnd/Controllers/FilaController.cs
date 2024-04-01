@@ -16,6 +16,7 @@ namespace ReportAdsomosBackEnd.Controllers
     public class FilaController : ControllerBase
     {
         private Agente agente;
+        private ObservacoesAgente observacoes;
         private readonly string urlGeral;
         private readonly string urlRelatorio;
         private readonly string urlFila;
@@ -44,6 +45,7 @@ namespace ReportAdsomosBackEnd.Controllers
             token = "";
             fila = "";
             agente = new Agente();
+            observacoes = new ObservacoesAgente();
         }
 
         [HttpGet("fila")]
@@ -168,8 +170,8 @@ namespace ReportAdsomosBackEnd.Controllers
                                     Console.WriteLine($"Agente em pausa: {agente.Nome}");
 
                                     //Gravar essa informação no banco
-                                    agente.Observacoes.Data = DateTime.Today;
-                                    agente.Observacoes.HoraInicial = DateTime.Now;
+                                    observacoes.Data = DateTime.Today;
+                                    observacoes.HoraInicial = DateTime.Now;
 
                                     //Antes de gravar no banco, verificar se o registro já não está no banco em aberto (data de hoje)... Se já existir o registro, não fazer nada.
 
@@ -177,15 +179,16 @@ namespace ReportAdsomosBackEnd.Controllers
                                 else
                                 {
                                     //Verifica agente no banco
-                                    Agente agenteAux = new();
+                                    ObservacoesAgente observacoesAux = new();
                                     //agenteAux = //Trabalhar aqui com a consulta no banco... (Pesquisar aqui pelo nome do agente)
 
-                                    if(agenteAux.Observacoes.Data == DateTime.Today && agenteAux.Observacoes.HoraFinal == null) //Data da pausa for hoje e ainda não tiver um fim
+                                    if(observacoesAux.Data == DateTime.Today && observacoesAux.HoraFinal == null) //Data da pausa for hoje e ainda não tiver um fim
                                     {
                                         //Fazer aqui a inserção no banco da hora final e tempo
-                                        agente.Observacoes.HoraFinal = DateTime.Now;
-                                        TimeSpan duracao = agenteAux.Observacoes.HoraFinal - agenteAux.Observacoes.HoraInicial;
-                                        agente.Observacoes.Duracao = agenteAux.Observacoes.Duracao.Add(duracao); //Fazer com que não seja preenchido a Duracao na consulta no bd
+                                        observacoesAux.HoraFinal = DateTime.Now;
+                                        TimeSpan duracao = observacoesAux.HoraFinal - observacoesAux.HoraInicial;
+                                        observacoesAux.Duracao = observacoesAux.Duracao.Add(duracao); //Fazer com que não seja preenchido a Duracao na consulta no bd
+                                        observacoesAux.Agente = agente;
 
                                         //Salvar no banco (Update no registro já presente)
 

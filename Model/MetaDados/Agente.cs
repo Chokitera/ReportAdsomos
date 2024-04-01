@@ -10,7 +10,9 @@ namespace Model.MetaDados
     {
         public string Nome { get; set; }
         public string Status { get; set; }
-        public Fila Fila = new();
-        public ObservacoesAgente Observacoes = new();
+        public virtual Fila? Fila { get; set; }
+        //public virtual ObservacoesAgente? Observacoes { get; set; }
+        //public Fila Fila = new();
+        //public ObservacoesAgente Observacoes = new();
     }
 }
